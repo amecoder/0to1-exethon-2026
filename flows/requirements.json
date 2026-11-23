@@ -1,0 +1,16 @@
+{
+  "id": "requirements",
+  "title": "요구사항 확정 — 메모에서 확인받은 문서·프로토타입까지",
+  "stages": [
+    {"id": "S1", "kind": "input", "title": "요구 입력"},
+    {"id": "S2", "kind": "work", "title": "문제 인식", "agents": ["fde_lead", "researcher"], "run": "problem"},
+    {"id": "CP1", "kind": "confirm", "title": "문제·범위 확인", "rework": "S2", "features": ["build_or_buy"]},
+    {"id": "S3", "kind": "work", "title": "구체화", "agents": ["pm", "qa", "coordinator"], "run": "requirements"},
+    {"id": "S4", "kind": "work", "title": "원본 확정", "agents": ["pm"], "run": "finalize"},
+    {"id": "CP2", "kind": "confirm", "title": "요구사항 원본 확인", "rework": "S3", "features": ["requirement_review"], "on_approve": ["snapshot", "refresh_problem"]},
+    {"id": "S5", "kind": "work", "title": "문서화", "agents": ["pm", "designer", "qa", "coordinator"], "run": "documents"},
+    {"id": "CP3", "kind": "confirm", "title": "문서 4종 확인", "rework": "S5", "on_approve": ["snapshot"]},
+    {"id": "S6", "kind": "work", "title": "프로토타입 작성", "agents": ["coordinator", "designer", "developer", "qa"], "run": "prototype"},
+    {"id": "CP4", "kind": "confirm", "title": "프로토타입 인수", "rework": "S6", "on_approve": ["bind_version", "clear_recheck"]}
+  ]
+}

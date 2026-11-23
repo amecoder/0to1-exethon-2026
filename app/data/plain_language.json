@@ -1,0 +1,5 @@
+{
+  "_note": "첫 판 — 작성자(에이전트)가 고른 목록이다. client_banned 는 Liner 한국어 스모크 테스트 C3 금지어와 같은 계열. solution_words 는 BRD 문제 칸에 해결책이 섞였는지 보는 단어. 사용자 검토 대상.",
+  "client_banned": ["인수 조건", "요구사항 ID", "REQ-", "스키마", "API", "엔드포인트", "유효성", "프로세스", "파라미터", "acceptance", "Given", "When", "Then"],
+  "solution_words": ["기능", "화면", "버튼", "개발", "구현", "시스템", "앱을 만"]
+}

@@ -1,0 +1,24 @@
+{
+  "about": "Small talk and unrelated favours a client might type into 「바꾸고 싶어요」 or 「이거 아닌데요」 after the flower-subscription requirements are confirmed (examples/flower-subscription). Expected: the PM answers target NONE for every change line and QA classifies every complaint line as 무관. Made up for the test. The real change requests are measured by eval/golden/change_cases.json (M2) — they must still map to a requirement.",
+  "pass_criteria": {"changes_unrelated_min": 9, "changes_total": 10, "complaints_unrelated_min": 5, "complaints_total": 6},
+  "changes": [
+    {"id": "U01", "text": "오늘 점심 뭐 먹을까요"},
+    {"id": "U02", "text": "수고 많으셨어요 감사합니다"},
+    {"id": "U03", "text": "다음 주에 회식 날짜 좀 잡아 주세요"},
+    {"id": "U04", "text": "요즘 날씨가 많이 춥네요"},
+    {"id": "U05", "text": "제 노트북이 느린데 고치는 법 알려 주세요"},
+    {"id": "U06", "text": "내일 미팅은 오후 2시로 할게요"},
+    {"id": "U07", "text": "ㅋㅋㅋ 좋네요"},
+    {"id": "U08", "text": "주말에 볼 만한 영화 추천해 주세요"},
+    {"id": "U09", "text": "이번 달 세금계산서는 언제 나오나요"},
+    {"id": "U10", "text": "테스트입니다"}
+  ],
+  "complaints": [
+    {"id": "C01", "text": "오늘 점심 뭐 먹을까요"},
+    {"id": "C02", "text": "수고 많으셨어요"},
+    {"id": "C03", "text": "요즘 날씨가 많이 춥네요"},
+    {"id": "C04", "text": "주말에 볼 만한 영화 추천해 주세요"},
+    {"id": "C05", "text": "제 노트북이 너무 느려요"},
+    {"id": "C06", "text": "테스트입니다"}
+  ]
+}

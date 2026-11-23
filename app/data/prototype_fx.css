@@ -1,0 +1,70 @@
+@layer kit {
+/* Visual effects (drawn by prototype_fx.js). Each one degrades to a still, readable look:
+   no WebGL / no three.js → the gradient stays; reduced motion → no movement. */
+.btn-primary {
+  background-image: linear-gradient(135deg, var(--accent), var(--accent-press));
+  box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.btn-primary:hover { box-shadow: 0 14px 30px -12px color-mix(in srgb, var(--accent) 80%, transparent); }
+
+/* A stage: hero (or any block) with a 3D scene (data-fx3d) or 2D particles (data-fx) behind its text. */
+[data-fx3d], [data-fx] { position: relative; isolation: isolate; overflow: hidden; }
+[data-fx3d] > canvas.fx-canvas, [data-fx] > canvas.fx-canvas {
+  position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none;
+}
+.hero[data-fx3d], .hero[data-fx], .fx-aurora {
+  background:
+    radial-gradient(70% 80% at 85% 10%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%),
+    radial-gradient(60% 70% at 0% 100%, color-mix(in srgb, var(--accent) 16%, #ffe8f1), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--accent) 7%, #fff), var(--surface));
+}
+.hero[data-fx3d], .hero[data-fx] {
+  display: flex; flex-direction: column; justify-content: flex-end; min-height: 260px;
+  margin: calc(var(--s2) * -1) calc(var(--s5) * -1) var(--s5); padding: 96px var(--s5) var(--s6);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+}
+/* Text stays readable over the scene: a soft light veil on the text side. */
+.hero[data-fx3d]::after, .hero[data-fx]::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(0deg, color-mix(in srgb, var(--surface) 88%, transparent) 10%, transparent 65%);
+}
+.fx-aurora { background-size: 160% 160%; animation: fx-drift 18s ease-in-out infinite alternate; }
+@keyframes fx-drift { from { background-position: 0% 0%; } to { background-position: 100% 60%; } }
+
+.grad-text {
+  background: linear-gradient(120deg, var(--accent), color-mix(in srgb, var(--accent) 45%, #ff7a59));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.card.glass {
+  border: 1px solid rgb(255 255 255 / .6); background: rgb(255 255 255 / .62);
+  backdrop-filter: blur(14px) saturate(1.3); box-shadow: 0 12px 32px -18px rgb(17 24 39 / .35);
+}
+.card.tilt { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .15s ease-out; will-change: transform; }
+
+/* Entrances: .stagger children rise one after another each time their screen opens; .reveal on scroll. */
+.stagger > * { animation: fx-rise .5s var(--ease) both; animation-delay: calc(var(--i, 0) * 70ms); }
+@keyframes fx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.reveal.is-in { opacity: 1; transform: none; }
+
+[data-chart] { position: relative; height: 180px; }
+[data-chart] > canvas { display: block; width: 100%; height: 100%; }
+[data-count] { font-variant-numeric: tabular-nums; }
+.fx-confetti { position: fixed; inset: 0; z-index: 70; width: 100%; height: 100%; pointer-events: none; }
+
+html[data-platform="web"] .hero[data-fx3d], html[data-platform="web"] .hero[data-fx] {
+  min-height: 380px; margin: 0 0 var(--s8); padding: var(--s10); border-radius: var(--r-xl);
+}
+html[data-platform="web"] .hero[data-fx3d]::after, html[data-platform="web"] .hero[data-fx]::after {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface) 85%, transparent) 25%, transparent 70%);
+}
+html[data-platform="web"] [data-chart] { height: 240px; }
+@media (min-width: 760px) {
+  html[data-platform="web"] .hero[data-fx3d] > :not(canvas) { max-width: 58%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-aurora, .stagger > * { animation: none; }
+  .reveal { opacity: 1; transform: none; }
+}
+}

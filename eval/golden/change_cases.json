@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "fixed_on": "2026-11-12",
+  "fixture": "examples/flower-subscription/requirements_fixture.json",
+  "purpose": "대표 지표 2(변경 영향 재현율)의 정답표. 시키는 사람의 변경 발화를 받아 (1) 대상 REQ 를 맞히는지 (2) 영향받는 REQ·SCR·TC 를 찾는지 잰다. 구현 전에 고정한다.",
+  "scoring": {
+    "target_accuracy": "target 을 맞힌 건수 / 20",
+    "impact_recall": "에이전트가 낸 영향 ID 중 정답에 있는 것 / 정답 ID 수 (모든 사례 합산)",
+    "impact_precision": "에이전트가 낸 영향 ID 중 정답에 있는 것 / 에이전트가 낸 ID 수",
+    "target": "impact_recall 0.90 이상, 3회 반복의 최소·최대 기록"
+  },
+  "cases": [
+    { "id": "CH-01", "utterance": "일시정지는 배송 하루 전까지 되게 해 주세요", "target": "REQ-06", "expected": { "requirements": ["REQ-06"], "screens": ["SCR-02"], "tests": ["TC-08", "TC-09"] } },
+    { "id": "CH-02", "utterance": "일시정지 최대 기간을 8주로 늘려 주세요", "target": "REQ-06", "expected": { "requirements": ["REQ-06"], "screens": ["SCR-02"], "tests": ["TC-08", "TC-09"] } },
+    { "id": "CH-03", "utterance": "주문 마감을 배송 3일 전으로 당겨야겠어요, 꽃 시장 일정이 바뀌었어요", "target": "REQ-05", "expected": { "requirements": ["REQ-05", "REQ-06", "REQ-07"], "screens": ["SCR-02", "SCR-05"], "tests": ["TC-07", "TC-08", "TC-09", "TC-10"] } },
+    { "id": "CH-04", "utterance": "결제는 배송 이틀 전에 하는 걸로 바꿔요", "target": "REQ-03", "expected": { "requirements": ["REQ-03", "REQ-04", "REQ-07", "REQ-11"], "screens": ["SCR-01", "SCR-02", "SCR-03"], "tests": ["TC-04", "TC-05", "TC-06", "TC-10", "TC-15"] } },
+    { "id": "CH-05", "utterance": "결제 실패하면 재시도를 두 번 해 주세요", "target": "REQ-04", "expected": { "requirements": ["REQ-04"], "screens": ["SCR-03"], "tests": ["TC-05", "TC-06"] } },
+    { "id": "CH-06", "utterance": "경기도 성남, 분당도 배송할게요", "target": "REQ-02", "expected": { "requirements": ["REQ-02"], "screens": ["SCR-01"], "tests": ["TC-02", "TC-03"] } },
+    { "id": "CH-07", "utterance": "배송 요일에 금요일도 추가해 주세요", "target": "REQ-01", "expected": { "requirements": ["REQ-01", "REQ-03", "REQ-04", "REQ-05", "REQ-06", "REQ-07", "REQ-11"], "screens": ["SCR-01", "SCR-02", "SCR-03", "SCR-05"], "tests": ["TC-01", "TC-04", "TC-05", "TC-06", "TC-07", "TC-08", "TC-09", "TC-10", "TC-15"] } },
+    { "id": "CH-08", "utterance": "L 사이즈 상품도 팔게요", "target": "REQ-01", "expected": { "requirements": ["REQ-01", "REQ-03", "REQ-04", "REQ-05", "REQ-06", "REQ-07", "REQ-11"], "screens": ["SCR-01", "SCR-02", "SCR-03", "SCR-05"], "tests": ["TC-01", "TC-04", "TC-05", "TC-06", "TC-07", "TC-08", "TC-09", "TC-10", "TC-15"] } },
+    { "id": "CH-09", "utterance": "알림은 알림톡 말고 문자로 보내 주세요", "target": "REQ-08", "expected": { "requirements": ["REQ-04", "REQ-08", "REQ-09"], "screens": ["SCR-03", "SCR-04"], "tests": ["TC-05", "TC-06", "TC-11", "TC-12", "TC-13"] } },
+    { "id": "CH-10", "utterance": "배송 전날 알림 시간을 저녁 8시로 바꿔 주세요", "target": "REQ-08", "expected": { "requirements": ["REQ-04", "REQ-08", "REQ-09"], "screens": ["SCR-03", "SCR-04"], "tests": ["TC-05", "TC-06", "TC-11", "TC-12", "TC-13"] } },
+    { "id": "CH-11", "utterance": "집에 아무도 없으면 문 앞 말고 경비실에 맡겨 주세요", "target": "REQ-09", "expected": { "requirements": ["REQ-09"], "screens": ["SCR-04"], "tests": ["TC-13"] } },
+    { "id": "CH-12", "utterance": "꽃이 품절되면 비슷한 꽃 말고 한 단계 비싼 꽃으로 보내 주세요", "target": "REQ-10", "expected": { "requirements": ["REQ-10"], "screens": ["SCR-04"], "tests": ["TC-14"] } },
+    { "id": "CH-13", "utterance": "첫 구독 쿠폰 할인을 30%로 올려 주세요", "target": "REQ-11", "expected": { "requirements": ["REQ-11"], "screens": ["SCR-01"], "tests": ["TC-15"] } },
+    { "id": "CH-14", "utterance": "첫 구독 쿠폰을 친구 초대 쿠폰이랑 같이 쓸 수 있게 해 주세요", "target": "REQ-11", "expected": { "requirements": ["REQ-11"], "screens": ["SCR-01"], "tests": ["TC-15"] } },
+    { "id": "CH-15", "utterance": "해지하면 이미 결제된 주도 환불해 주세요", "target": "REQ-07", "expected": { "requirements": ["REQ-07"], "screens": ["SCR-02"], "tests": ["TC-10"] } },
+    { "id": "CH-16", "utterance": "해지는 마감 이후에 눌러도 바로 되게 해 주세요", "target": "REQ-07", "expected": { "requirements": ["REQ-07"], "screens": ["SCR-02"], "tests": ["TC-10"] } },
+    { "id": "CH-17", "utterance": "선물용으로 받는 사람 이름을 따로 적을 수 있게 해 주세요", "target": "REQ-01", "expected": { "requirements": ["REQ-01", "REQ-03", "REQ-04", "REQ-05", "REQ-06", "REQ-07", "REQ-11"], "screens": ["SCR-01", "SCR-02", "SCR-03", "SCR-05"], "tests": ["TC-01", "TC-04", "TC-05", "TC-06", "TC-07", "TC-08", "TC-09", "TC-10", "TC-15"] } },
+    { "id": "CH-18", "utterance": "서울 중에서도 강남·서초·송파만 할게요", "target": "REQ-02", "expected": { "requirements": ["REQ-02"], "screens": ["SCR-01"], "tests": ["TC-02", "TC-03"] } },
+    { "id": "CH-19", "utterance": "자동결제를 2주에 한 번으로 바꾸고 싶어요", "target": "REQ-03", "expected": { "requirements": ["REQ-03", "REQ-04", "REQ-07", "REQ-11"], "screens": ["SCR-01", "SCR-02", "SCR-03"], "tests": ["TC-04", "TC-05", "TC-06", "TC-10", "TC-15"] } },
+    { "id": "CH-20", "utterance": "주문 마감 시간을 밤 10시로 앞당겨 주세요", "target": "REQ-05", "expected": { "requirements": ["REQ-05", "REQ-06", "REQ-07"], "screens": ["SCR-02", "SCR-05"], "tests": ["TC-07", "TC-08", "TC-09", "TC-10"] } }
+  ]
+}

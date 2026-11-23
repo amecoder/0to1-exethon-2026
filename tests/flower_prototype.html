@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>꽃님 정기구독</title>
+<link rel="stylesheet" href="https://fonts.example.com/pretty.css">
+<style>
+:root{--accent:#b4234f}
+.bloom{display:flex;align-items:center;gap:16px;padding:20px;border-radius:20px;
+  background:linear-gradient(135deg,#fde8ee 0%,#fff4ec 100%)}
+.bloom-art{flex:none;display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:#fff;font-size:36px;
+  box-shadow:0 6px 16px rgb(180 35 79 / .14)}
+.bloom-text{font-size:14px;color:#6b3a48}
+.bloom-text strong{display:block;font-size:16px;color:#3d1622}
+</style></head>
+<body><div class="app">
+<header class="appbar">
+  <button type="button" class="appbar-back" data-back aria-label="뒤로" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+  <h1 class="appbar-title">정기구독 신청</h1>
+</header>
+<main class="main">
+
+<section class="screen is-active" data-scr="SCR-01" data-title="정기구독 신청" aria-labelledby="t-sub">
+  <div class="hero">
+    <h2 class="title" id="t-sub">매주 한 번,<br>제철 꽃을 받아 보세요</h2>
+    <p class="subtitle">사이즈와 받는 요일만 고르면 신청이 끝나요</p>
+  </div>
+  <div class="stack-lg">
+    <div class="bloom">
+      <img class="thumb" data-img="bouquet" alt="이번 주 라넌큘러스 꽃다발">
+      <p class="bloom-text"><strong>이번 주는 라넌큘러스</strong>사장님이 그 주에 가장 좋은 꽃으로 골라 보내요</p>
+    </div>
+    <div class="field">
+      <p class="label" id="l-size">사이즈</p>
+      <div class="choice-grid" role="radiogroup" aria-labelledby="l-size">
+        <label class="choice"><input type="radio" name="size" value="S" data-label="S · 한 손 다발" checked>
+          <span class="choice-title">S</span><span class="choice-desc">한 손 다발 · 5~7송이</span><span class="choice-price">주 24,000원<span class="sample">예시</span></span></label>
+        <label class="choice"><input type="radio" name="size" value="M" data-label="M · 풍성한 다발">
+          <span class="choice-title">M</span><span class="choice-desc">풍성한 다발 · 10~12송이</span><span class="choice-price">주 34,000원<span class="sample">예시</span></span></label>
+      </div>
+    </div>
+    <div class="field">
+      <p class="label" id="l-day">받는 요일</p>
+      <div class="seg" role="radiogroup" aria-labelledby="l-day">
+        <label><input type="radio" name="day" value="수" data-label="수요일" checked><span>수요일</span></label>
+        <label><input type="radio" name="day" value="토" data-label="토요일"><span>토요일</span></label>
+      </div>
+      <p class="help">지금은 서울에만 배송해요</p>
+      <details class="help"><summary>자세히</summary><p>수요일 회차는 월요일 23:59, 토요일 회차는 목요일 23:59까지 바꿀 수 있어요.</p></details>
+    </div>
+    <div class="field">
+      <label class="label" for="card">결제 카드</label>
+      <input id="card" type="text" inputmode="numeric" autocomplete="off" placeholder="카드 번호 16자리">
+      <p class="help">숫자만 입력해요 · 시연용 가짜 화면이에요</p>
+      <p class="error-text">카드 번호 16자리를 확인해 주세요</p>
+    </div>
+    <section aria-labelledby="h-sum">
+      <div class="section-head"><h3 id="h-sum">결제 요약</h3></div>
+      <dl class="summary">
+        <div class="summary-row"><dt>사이즈</dt><dd data-bind="size">S · 한 손 다발</dd></div>
+        <div class="summary-row"><dt>받는 요일</dt><dd>매주 <span data-bind="day">수요일</span></dd></div>
+        <div class="summary-row"><dt>결제 방식</dt><dd>매주 카드 자동결제</dd></div>
+        <div class="summary-row summary-total"><dt>이번 주 결제</dt><dd id="total">24,000원</dd></div>
+      </dl>
+    </section>
+  </div>
+  <div class="cta-bar">
+    <button type="button" class="btn btn-primary btn-block" data-toast="구독을 신청했어요 · 첫 꽃은 이번 주에 가요">구독 신청하기</button>
+  </div>
+</section>
+
+<section class="screen" data-scr="SCR-02" data-title="내 구독" aria-labelledby="t-mine" hidden>
+  <div class="hero">
+    <h2 class="title" id="t-mine">내 구독</h2>
+    <p class="subtitle">결제와 배송을 한곳에서 챙겨요</p>
+  </div>
+  <div class="stack-lg">
+    <div class="banner banner-danger" role="alert">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v5.5M12 16.5h.01"/></svg>
+      <div><strong>이번 주 결제가 안 됐어요</strong>카드 한도를 확인해 주세요. 3일 안에 한 번 더 결제를 시도해요.</div>
+    </div>
+    <div class="card">
+      <div class="inline"><span class="badge badge-accent">구독 중</span><span class="badge badge-warn">결제 확인 필요</span></div>
+      <p class="card-title" style="margin-top:12px">S · 한 손 다발 · 매주 수요일</p>
+      <p class="card-sub">김꽃님 (가짜 고객) · 다음 배송 11월 19일 수요일</p>
+    </div>
+    <section aria-labelledby="h-manage">
+      <div class="section-head"><h3 id="h-manage">구독 관리</h3></div>
+      <div class="list">
+        <button type="button" class="row" data-sheet="pause-sheet">
+          <span class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg></span>
+          <span class="row-main"><span class="row-title">잠시 멈추기</span><span class="row-sub">바쁠 땐 다음 배송부터 쉬어 가요</span></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="row" data-sheet="cancel-sheet">
+          <span class="row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span>
+          <span class="row-main"><span class="row-title">구독 해지</span><span class="row-sub">자동결제도 함께 멈춰요</span></span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </section>
+    <section aria-labelledby="h-history">
+      <div class="section-head"><h3 id="h-history">결제 내역</h3></div>
+      <div class="list">
+        <div class="row"><span class="row-main"><span class="row-title">11월 19일</span><span class="row-sub">S · 한 손 다발</span></span>
+          <span class="row-end">24,000원 <span class="badge badge-danger">실패</span></span></div>
+        <div class="row"><span class="row-main"><span class="row-title">11월 12일</span><span class="row-sub">S · 한 손 다발</span></span>
+          <span class="row-end">24,000원 <span class="badge badge-success">완료</span></span></div>
+      </div>
+    </section>
+  </div>
+  <div class="cta-bar">
+    <button type="button" class="btn btn-primary btn-block" data-toast="다시 결제했어요 · 24,000원">다시 결제하기</button>
+  </div>
+</section>
+</main>
+
+<nav class="tabbar" aria-label="화면 이동">
+  <button type="button" class="tab is-active" data-go="SCR-01"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8c0-3 2-5 4-5 0 3-1 5-4 5zM12 8c0-3-2-5-4-5 0 3 1 5 4 5zM12 8v13M12 14c3 0 5-2 6-4M12 17c-3 0-5-2-6-4"/></svg><span>신청</span></button>
+  <button type="button" class="tab" data-go="SCR-02"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>내 구독</span></button>
+</nav>
+</div>
+
+<div class="sheet" id="pause-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="pause-title">
+  <button type="button" class="sheet-backdrop" data-close aria-label="닫기"></button>
+  <div class="sheet-panel">
+    <h2 class="sheet-title" id="pause-title">구독을 잠시 멈출까요?</h2>
+    <p class="sheet-text">다음 배송(11월 19일)부터 멈춰요. 언제든 다시 시작할 수 있어요.</p>
+    <div class="inline" style="justify-content:space-between;margin-bottom:24px">
+      <span class="label">멈출 기간(주)</span>
+      <div class="stepper" data-min="1" data-max="4"><button type="button" data-step="-1" aria-label="한 주 줄이기">−</button><output aria-live="polite">1</output><button type="button" data-step="1" aria-label="한 주 늘리기">+</button></div>
+    </div>
+    <div class="stack">
+      <button type="button" class="btn btn-primary btn-block" data-close data-toast="구독을 잠시 멈췄어요">멈추기</button>
+      <button type="button" class="btn btn-ghost btn-block" data-close>닫기</button>
+    </div>
+  </div>
+</div>
+<div class="sheet" id="cancel-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+  <button type="button" class="sheet-backdrop" data-close aria-label="닫기"></button>
+  <div class="sheet-panel">
+    <h2 class="sheet-title" id="cancel-title">정말 해지할까요?</h2>
+    <p class="sheet-text">해지하면 다음 주부터 꽃이 오지 않고 자동결제도 멈춰요.</p>
+    <div class="stack">
+      <button type="button" class="btn btn-danger btn-block" data-close data-toast="구독을 해지했어요">해지하기</button>
+      <button type="button" class="btn btn-ghost btn-block" data-close>계속 받을게요</button>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll('input[name=size]').forEach(function (r) {
+  r.addEventListener('change', function () { document.getElementById('total').textContent = r.value === 'M' ? '34,000원' : '24,000원'; });
+});
+</script>
+</body></html>

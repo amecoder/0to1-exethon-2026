@@ -1,0 +1,9 @@
+# gitleaks: default rules plus one allowlist for test fixtures that set a cost budget
+# (EXETHON_MAX_COST_USD="0.0045" is a dollar amount, not a secret).
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "cost budget values in tests"
+regexTarget = "line"
+regexes = ['''EXETHON_MAX_COST_USD="[0-9.]+"''']

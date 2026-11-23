@@ -1,0 +1,33 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+.next/
+*.tsbuildinfo
+
+# Demo recordings (large)
+*.mp4
+*.mov
+
+# Local app data (SQLite)
+/data/
+.playwright-mcp/
+
+# Local Claude Code workspace (session logs may hold secrets) — never part of the submission
+.claude/

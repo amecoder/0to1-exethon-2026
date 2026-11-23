@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "fixed_on": "2026-11-16",
+  "fixture": "examples/flower-subscription/requirements_fixture.json",
+  "purpose": "FR-22 「아 이거 아닌데?」 판정(Liner Decisions choice violation/new_change)의 정답표. 확정된 요구사항(confirmed)과 발주사의 불만을 주고, 합의 위반인지 새 변경 요청인지 맞히는지 잰다. 구현 전에 고정한다. 전부 가상 데이터.",
+  "labels": {
+    "violation": "확정된 요구사항대로 결과물이 나오지 않았다는 불만 (합의 위반)",
+    "new_change": "확정된 것과 다른 것을 원하는 불만 (새 변경 요청)"
+  },
+  "scoring": {
+    "accuracy": "정답 라벨과 같은 choice 수 / 20 (라벨별로도 따로 센다)",
+    "low_confidence": "confidence 가 문턱(EXETHON_DECISION_MIN_CONFIDENCE, 제안 0.6)보다 낮아 「사람 판단 필요」가 되는 건수",
+    "target": "accuracy 0.90 이상"
+  },
+  "cases": [
+    { "id": "CC-01", "confirmed": ["REQ-01"], "complaint": "배송 요일을 수요일이랑 토요일 중에 고르기로 했는데 신청 화면에 토요일밖에 없어요", "expected": "violation" },
+    { "id": "CC-02", "confirmed": ["REQ-02"], "complaint": "서울 밖 주소는 막기로 했잖아요, 그런데 부산 주소로도 신청이 그냥 돼요", "expected": "violation" },
+    { "id": "CC-03", "confirmed": ["REQ-03"], "complaint": "결제는 배송 3일 전 아침 9시에 하기로 했는데 배송 당일에 결제가 됐어요", "expected": "violation" },
+    { "id": "CC-04", "confirmed": ["REQ-04"], "complaint": "결제가 실패하면 다음 날 한 번 다시 결제하기로 했는데 재시도 없이 바로 배송이 취소됐어요", "expected": "violation" },
+    { "id": "CC-05", "confirmed": ["REQ-05"], "complaint": "마감 뒤에는 그 주 내용을 못 바꾸게 하기로 했는데 마감이 지났는데도 사이즈가 바뀌어요", "expected": "violation" },
+    { "id": "CC-06", "confirmed": ["REQ-06"], "complaint": "일시정지는 최대 4주까지라고 정했는데 화면에서는 2주까지만 고를 수 있어요", "expected": "violation" },
+    { "id": "CC-07", "confirmed": ["REQ-07"], "complaint": "마감 전에 해지했는데도 다음 주 결제가 또 나갔어요, 그러면 안 된다고 했잖아요", "expected": "violation" },
+    { "id": "CC-08", "confirmed": ["REQ-08"], "complaint": "배송 전날 저녁 6시에 카카오 알림톡이 오기로 했는데 아무 알림도 안 와요", "expected": "violation" },
+    { "id": "CC-09", "confirmed": ["REQ-10"], "complaint": "꽃이 품절돼서 바뀌면 배송 내역에 표시하기로 했는데 아무 표시 없이 다른 꽃이 왔어요", "expected": "violation" },
+    { "id": "CC-10", "confirmed": ["REQ-11"], "complaint": "첫 결제에 20% 쿠폰을 쓸 수 있게 하기로 했는데 첫 결제 화면에 쿠폰 넣는 칸이 없어요", "expected": "violation" },
+    { "id": "CC-11", "confirmed": ["REQ-06"], "complaint": "일시정지가 왜 마감 전까지만 돼요? 배송 하루 전까지는 되게 해 주세요", "expected": "new_change" },
+    { "id": "CC-12", "confirmed": ["REQ-06"], "complaint": "4주로는 부족해요, 일시정지를 8주까지 할 수 있어야죠", "expected": "new_change" },
+    { "id": "CC-13", "confirmed": ["REQ-03"], "complaint": "결제가 배송 3일 전에 되는 게 너무 일러요, 이틀 전에 하는 걸로 해 주세요", "expected": "new_change" },
+    { "id": "CC-14", "confirmed": ["REQ-02"], "complaint": "왜 성남·분당은 안 받아요? 그쪽 손님도 많은데 배송되게 해 주세요", "expected": "new_change" },
+    { "id": "CC-15", "confirmed": ["REQ-01"], "complaint": "금요일에 받고 싶다는 손님이 많은데 왜 요일에 금요일이 없어요?", "expected": "new_change" },
+    { "id": "CC-16", "confirmed": ["REQ-01"], "complaint": "큰 꽃다발을 원하는 분도 있는데 L 사이즈가 왜 없죠?", "expected": "new_change" },
+    { "id": "CC-17", "confirmed": ["REQ-08"], "complaint": "알림톡 말고 그냥 문자로 오면 좋겠는데 왜 알림톡이에요?", "expected": "new_change" },
+    { "id": "CC-18", "confirmed": ["REQ-09"], "complaint": "문 앞에 두면 꽃이 시들어요, 집에 없으면 경비실에 맡겨 주셔야죠", "expected": "new_change" },
+    { "id": "CC-19", "confirmed": ["REQ-07"], "complaint": "해지했는데 이미 결제된 주가 그냥 배송됐어요, 그 주도 환불해 주세요", "expected": "new_change" },
+    { "id": "CC-20", "confirmed": ["REQ-11"], "complaint": "첫 구독 쿠폰이 친구 초대 쿠폰이랑 같이 안 써지네요, 같이 쓰게 해 주세요", "expected": "new_change" }
+  ]
+}

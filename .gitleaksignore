@@ -1,0 +1,11 @@
+# Test fixtures with fake keys (not real secrets): reviewed 2026-11-18
+dda0dad4cd0164a3a10cbaa8602f56d80c6aa17a:tests/test_usage_fields.py:generic-api-key:47
+cda33f3dbe777509c591d680c25ed52496944122:tests/test_liner_features.py:generic-api-key:287
+ce279b4ebd3553ff160386e1ea53b49c945785d9:tests/test_limits.py:generic-api-key:29
+ce279b4ebd3553ff160386e1ea53b49c945785d9:tests/test_limits.py:generic-api-key:60
+6a7bf04585ff34f0a5ebd5e4d24567b8dfc031d6:tests/test_guardrails.py:generic-api-key:13
+tests/test_guardrails.py:generic-api-key:13
+tests/test_limits.py:generic-api-key:29
+tests/test_limits.py:generic-api-key:60
+tests/test_liner_features.py:generic-api-key:287
+tests/test_usage_fields.py:generic-api-key:47

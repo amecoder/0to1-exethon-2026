@@ -1,0 +1,56 @@
+@layer kit {
+/* Layout helpers for both platforms: one column on a phone, more columns where the platform is a web site. */
+.grid-2, .grid-3 { display: grid; grid-template-columns: 1fr; gap: var(--s3); }
+.split { display: flex; flex-direction: column; gap: var(--s5); }
+
+/* <html data-platform="web">: a responsive site. Narrow (mobile web) keeps the phone layout; from tablet
+   width up the app bar and the tabs become one top navigation row and content spreads into columns. */
+html[data-platform="web"] body { background: var(--bg); }
+@media (min-width: 760px) {
+  html[data-platform="web"] .app {
+    display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto 1fr;
+    max-width: none; min-height: 100dvh; background: var(--bg); box-shadow: none;
+  }
+  html[data-platform="web"] .appbar, html[data-platform="web"] .tabbar {
+    grid-row: 1; position: sticky; top: 0; z-index: 30; height: 68px;
+    border-top: 0; border-bottom: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 86%, transparent); backdrop-filter: blur(18px); box-shadow: none;
+  }
+  html[data-platform="web"] .appbar { grid-column: 1; padding: 0 var(--s4) 0 var(--s8); }
+  html[data-platform="web"] .app .appbar .appbar-title { opacity: 1 !important; font-size: 19px; letter-spacing: -0.02em; }
+  html[data-platform="web"] .appbar-back { display: none; }
+  html[data-platform="web"] .tabbar { grid-column: 2; justify-content: flex-end; align-items: center; gap: var(--s1); padding: 0 var(--s8); }
+  html[data-platform="web"] .tab {
+    flex: none; flex-direction: row; gap: var(--s2); height: 40px; padding: 0 var(--s4); border-radius: var(--r-pill); font-size: 15px;
+  }
+  html[data-platform="web"] .tab svg { width: 18px; height: 18px; }
+  html[data-platform="web"] .tab:hover { background: var(--surface-2); color: var(--ink); }
+  html[data-platform="web"] .tab.is-active, html[data-platform="web"] .tab[aria-current="page"] { background: var(--accent-soft); color: var(--accent-press); }
+  html[data-platform="web"] .main { grid-column: 1 / -1; grid-row: 2; }
+  html[data-platform="web"] .screen { width: 100%; max-width: 1180px; margin: 0 auto; padding: var(--s10) var(--s10) 80px; }
+  html[data-platform="web"] .hero { padding: var(--s8) 0 var(--s10); }
+  html[data-platform="web"] .title { font-size: 40px; letter-spacing: -0.035em; }
+  html[data-platform="web"] .subtitle { max-width: 640px; font-size: 18px; }
+  html[data-platform="web"] .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5); }
+  html[data-platform="web"] .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s5); }
+  html[data-platform="web"] .split { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; gap: var(--s8); }
+  html[data-platform="web"] .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s4); }
+  html[data-platform="web"] .kpi { padding: var(--s5); }
+  html[data-platform="web"] .kpi-num { font-size: 30px; }
+  html[data-platform="web"] .choice-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html[data-platform="web"] .flow, html[data-platform="web"] .field { max-width: 640px; }
+  html[data-platform="web"] .card { transition: transform .2s var(--ease), box-shadow .2s var(--ease); }
+  html[data-platform="web"] .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+  html[data-platform="web"] .sheet { align-items: center; padding: var(--s6); }
+  html[data-platform="web"] .sheet-panel {
+    max-width: 560px; border-radius: var(--r-xl); opacity: 0; transform: translateY(20px) scale(.98);
+    transition: transform .3s var(--ease), opacity .3s var(--ease);
+  }
+  html[data-platform="web"] .sheet-panel::before { display: none; }
+  html[data-platform="web"] .sheet.is-open .sheet-panel { opacity: 1; transform: none; }
+  html[data-platform="web"] .toast { bottom: var(--s8); }
+}
+@media (min-width: 1200px) {
+  html[data-platform="web"] .title { font-size: 48px; }
+}
+}

@@ -1,0 +1,30 @@
+{"skeleton": [
+  {"type": "rectangle", "id": "team", "x": -40, "y": 420, "width": 1280, "height": 370, "backgroundColor": "#e9ecef", "strokeStyle": "dashed"},
+  {"type": "text", "x": -20, "y": 428, "text": "팀 에이전트 6 (관계선 = 직접 협업 가능)", "fontSize": 18},
+
+  {"type": "rectangle", "id": "client", "x": 0, "y": 0, "width": 180, "height": 70, "backgroundColor": "#ffec99", "label": {"text": "발주사\n(사람·테스터)"}},
+  {"type": "rectangle", "id": "consumer", "x": 1020, "y": 0, "width": 180, "height": 70, "backgroundColor": "#ffec99", "label": {"text": "소비자\n(에이전트)"}},
+  {"type": "rectangle", "id": "coord", "x": 500, "y": 200, "width": 200, "height": 70, "backgroundColor": "#a5d8ff", "label": {"text": "조율자\n(결정·미결 관리)"}},
+
+  {"type": "rectangle", "id": "fde", "x": 0, "y": 460, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "FDE 리드"}},
+  {"type": "rectangle", "id": "res", "x": 340, "y": 460, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "리서처\n(Liner Search)"}},
+  {"type": "rectangle", "id": "pm", "x": 680, "y": 460, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "PM·기획자"}},
+  {"type": "rectangle", "id": "des", "x": 1020, "y": 460, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "디자이너"}},
+  {"type": "rectangle", "id": "qa", "x": 680, "y": 680, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "QA"}},
+  {"type": "rectangle", "id": "dev", "x": 1020, "y": 680, "width": 180, "height": 70, "backgroundColor": "#b2f2bb", "label": {"text": "개발자"}},
+
+  {"type": "rectangle", "id": "src", "x": -40, "y": 880, "width": 1280, "height": 80, "backgroundColor": "#a5d8ff", "label": {"text": "공유 원본 — 요구사항 · BRD · PRD · 화면설계서 · 테스트 케이스 · 결정 로그 · 미결 목록\n모두 읽고, 자기 몫만 쓴다", "fontSize": 18}},
+
+  {"type": "arrow", "x": 180, "y": 35, "points": [[0, 0], [318, 200]], "width": 318, "height": 200, "start": {"id": "client"}, "end": {"id": "coord"}, "startArrowhead": "arrow", "label": {"text": "첫 요구 · 답변 · 컨펌"}},
+  {"type": "arrow", "x": 1020, "y": 35, "points": [[0, 0], [-318, 200]], "width": 318, "height": 200, "start": {"id": "consumer"}, "end": {"id": "coord"}, "startArrowhead": "arrow", "label": {"text": "사용자 관점 의견"}},
+  {"type": "arrow", "x": 600, "y": 270, "points": [[0, 0], [0, 148]], "width": 0, "height": 148, "start": {"id": "coord"}, "end": {"id": "team"}, "startArrowhead": "arrow", "label": {"text": "배정 · 취합 · 결정"}},
+
+  {"type": "arrow", "x": 180, "y": 495, "points": [[0, 0], [158, 0]], "width": 158, "height": 0, "start": {"id": "fde"}, "end": {"id": "res"}, "startArrowhead": "arrow", "label": {"text": "근거 요청", "fontSize": 16}},
+  {"type": "arrow", "x": 520, "y": 495, "points": [[0, 0], [158, 0]], "width": 158, "height": 0, "start": {"id": "res"}, "end": {"id": "pm"}, "startArrowhead": "arrow", "label": {"text": "출처 전달", "fontSize": 16}},
+  {"type": "arrow", "x": 860, "y": 495, "points": [[0, 0], [158, 0]], "width": 158, "height": 0, "start": {"id": "pm"}, "end": {"id": "des"}, "startArrowhead": "arrow", "label": {"text": "PRD", "fontSize": 16}},
+  {"type": "arrow", "x": 770, "y": 530, "points": [[0, 0], [0, 148]], "width": 0, "height": 148, "start": {"id": "pm"}, "end": {"id": "qa"}, "startArrowhead": "arrow", "label": {"text": "요구사항", "fontSize": 16}},
+  {"type": "arrow", "x": 1110, "y": 530, "points": [[0, 0], [0, 148]], "width": 0, "height": 148, "start": {"id": "des"}, "end": {"id": "dev"}, "startArrowhead": "arrow", "label": {"text": "화면설계", "fontSize": 16}},
+  {"type": "arrow", "x": 860, "y": 715, "points": [[0, 0], [158, 0]], "width": 158, "height": 0, "start": {"id": "qa"}, "end": {"id": "dev"}, "startArrowhead": "arrow", "label": {"text": "테스트 기준", "fontSize": 16}},
+
+  {"type": "arrow", "x": 600, "y": 790, "points": [[0, 0], [0, 88]], "width": 0, "height": 88, "start": {"id": "team"}, "end": {"id": "src"}, "startArrowhead": "arrow"}
+]}

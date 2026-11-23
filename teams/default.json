@@ -1,0 +1,26 @@
+{
+  "id": "default",
+  "name": "꽃님 프로젝트 기본 팀",
+  "coordinator": "coordinator",
+  "members": ["coordinator", "fde_lead", "researcher", "pm", "designer", "developer", "qa"],
+  "external": [
+    { "id": "client", "kind": "human" },
+    { "id": "consumer", "kind": "agent" }
+  ],
+  "relations": [
+    { "from": "client", "to": "coordinator", "carries": "첫 요구, 질문 카드 답변, 문서 컨펌" },
+    { "from": "consumer", "to": "coordinator", "carries": "최종 사용자 관점 의견(불편, 포기 지점)" },
+    { "from": "coordinator", "to": "fde_lead", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "coordinator", "to": "researcher", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "coordinator", "to": "pm", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "coordinator", "to": "designer", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "coordinator", "to": "developer", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "coordinator", "to": "qa", "carries": "작업 배정, 결과 취합, 결정 기록, 미결 추적, 컨펌 필요 시 멈춤" },
+    { "from": "fde_lead", "to": "researcher", "carries": "도메인 관행·규정 근거 요청과 결과" },
+    { "from": "researcher", "to": "pm", "carries": "출처가 달린 근거 → 요구사항 우선순위" },
+    { "from": "pm", "to": "designer", "carries": "PRD → 화면설계서, 화면에서 나온 빈칸" },
+    { "from": "pm", "to": "qa", "carries": "요구사항 → 테스트 케이스, 충돌·빈칸 지적" },
+    { "from": "designer", "to": "developer", "carries": "화면설계서 → 프로토타입 화면" },
+    { "from": "qa", "to": "developer", "carries": "테스트 기준 → 프로토타입 확인(실제 실행은 다음 단계)" }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "requirements_lite",
+  "title": "요구사항까지만 — 엔진 검증용 (화면에서는 아직 고를 수 없음)",
+  "stages": [
+    {"id": "S1", "kind": "input", "title": "요구 입력"},
+    {"id": "S2", "kind": "work", "title": "문제 인식", "agents": ["fde_lead", "researcher"], "run": "problem"},
+    {"id": "CP1", "kind": "confirm", "title": "문제·범위 확인", "rework": "S2", "features": ["build_or_buy"]},
+    {"id": "S3", "kind": "work", "title": "구체화", "agents": ["pm", "qa", "coordinator"], "run": "requirements"},
+    {"id": "S4", "kind": "work", "title": "원본 확정", "agents": ["pm"], "run": "finalize"},
+    {"id": "CP2", "kind": "confirm", "title": "요구사항 원본 확인", "rework": "S3", "features": ["requirement_review"], "on_approve": ["snapshot"]}
+  ]
+}

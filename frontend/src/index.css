@@ -1,0 +1,292 @@
+/* Design system entry. Every screen is on the new design (phase B removed the legacy stylesheet).
+ * The `legacy` layer below only holds the element resets for the design surface (.ds). */
+@layer theme, base, legacy, components, utilities;
+
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+/* shadcn/ui theme tokens — dark cobalt theme only (user decisions 2026-11-15: space theme; 2026-11-16:
+ * cobalt gradient + film grain + glyph particles instead of navy + starfield).
+ * Accent pair: violet #8B7CFF (light text #B3A8FF, solid #6553F5) + cyan #7FE3F0. Text tokens were lifted
+ * for the brighter cobalt so every pair stays WCAG AA on the lightest area text sits on (#1d43a6):
+ * foreground 9.9:1, soft 8.3:1, muted 6.2:1, faint 4.8:1, accent text 5.2:1. */
+:root {
+  color-scheme: dark;
+  --radius: 0.875rem; /* 14px base; the task card uses radius-3xl (24px), chips are full */
+
+  --background: #0b1e5b; /* deep cobalt (the gradient's darkest end) */
+  --foreground: #f3f6ff;
+  --card: rgb(9 22 76 / 0.74); /* deep-cobalt glass, dark enough for AA over the bright corner */
+  --card-foreground: #f3f6ff;
+  --popover: #12266f;
+  --popover-foreground: #f3f6ff;
+
+  --primary: #6553f5; /* solid violet: white text 5.1:1 */
+  --primary-hover: #5b48f0;
+  --primary-foreground: #ffffff;
+  --primary-text: #b3a8ff; /* violet as text on navy */
+  --primary-soft: rgb(139 124 255 / 0.14);
+  --primary-ring: rgb(139 124 255 / 0.5);
+  --cyan: #7fe3f0;
+  --cyan-soft: rgb(127 227 240 / 0.12);
+
+  --secondary: rgb(255 255 255 / 0.06);
+  --secondary-foreground: #d6def5;
+  --muted: rgb(255 255 255 / 0.04);
+  --muted-foreground: #b3bfe6; /* cool blue-grey */
+  --soft: #d6def5;
+  --faint: #9fb0dd;
+  --accent: rgb(255 255 255 / 0.06);
+  --accent-foreground: #f3f6ff;
+  --subtle: rgb(255 255 255 / 0.035);
+
+  --destructive: #ff8a8a;
+  --warning: #f2b65a;
+  --warning-soft: rgb(242 182 90 / 0.12);
+  --success: #5ee0a0;
+
+  --border: rgb(255 255 255 / 0.11);
+  --deep: #0a1a55; /* opaque deep cobalt: bars, inputs, canvas windows */
+  --raised: #102470;
+  --border-strong: rgb(255 255 255 / 0.18);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: #8b7cff;
+}
+
+@theme inline {
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+    "Malgun Gothic", system-ui, sans-serif;
+
+  /* Type scale: 13 · 15 (body) · 17 · 20 · 28 (task title) · 40 (start hero) */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.6;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.0625rem;
+  --text-lg--line-height: 1.55;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.45;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.35;
+  --text-hero: 2.5rem;
+  --text-hero--line-height: 1.25;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-text: var(--primary-text);
+  --color-cyan: var(--cyan);
+  --color-cyan-soft: var(--cyan-soft);
+  --color-soft: var(--soft);
+  --color-faint: var(--faint);
+  --color-border-strong: var(--border-strong);
+  --color-primary-ring: var(--primary-ring);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-subtle: var(--subtle);
+  --color-deep: var(--deep);
+  --color-raised: var(--raised);
+  --color-destructive: var(--destructive);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-success: var(--success);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 6px);
+  --radius-3xl: calc(var(--radius) + 10px);
+
+  --shadow-card: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 24px 64px -24px rgb(2 4 16 / 0.8);
+  --shadow-glow: 0 0 0 1px rgb(139 124 255 / 0.45), 0 10px 36px -8px rgb(101 83 245 / 0.7);
+  --shadow-orb: 0 0 0 1px rgb(127 227 240 / 0.6), 0 0 18px 2px rgb(127 227 240 / 0.45);
+
+  --animate-rise: rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-shimmer: shimmer 2.2s linear infinite;
+  --animate-breathe: breathe 1.8s ease-in-out infinite;
+  --animate-collapsible-down: collapsible-down 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-collapsible-up: collapsible-up 180ms ease-in;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 0 0 1px rgb(127 227 240 / 0.55), 0 0 10px 1px rgb(127 227 240 / 0.35); }
+    50% { box-shadow: 0 0 0 1px rgb(127 227 240 / 0.8), 0 0 20px 4px rgb(127 227 240 / 0.55); }
+  }
+  @keyframes collapsible-down {
+    from { height: 0; opacity: 0; }
+    to { height: var(--radix-collapsible-content-height); opacity: 1; }
+  }
+  @keyframes collapsible-up {
+    from { height: var(--radix-collapsible-content-height); opacity: 1; }
+    to { height: 0; opacity: 0; }
+  }
+}
+
+@layer base {
+  ::selection {
+    background: rgb(139 124 255 / 0.4);
+  }
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Inside the new design surface, cancel the legacy element defaults (paragraph margins, orange focus). */
+@layer legacy {
+  .ds p,
+  .ds h1,
+  .ds h2,
+  .ds h3,
+  .ds ol,
+  .ds ul {
+    margin: 0;
+  }
+  .ds h1,
+  .ds h2,
+  .ds h3,
+  .ds h4 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  .ds ol,
+  .ds ul {
+    list-style: none;
+    padding: 0;
+  }
+  .ds :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+}
+
+/* Cobalt backdrop (pure CSS, no images, no network):
+ *  ::before — film grain (static SVG noise) over a deep-cobalt → sky-blue diagonal gradient with a soft
+ *             light-blue glow in the top-right corner.
+ *  ::after  — sparse, tiny, low-opacity glyph particles (· ✦ REQ SRC TC) that drift very slowly;
+ *             the drift stops under prefers-reduced-motion. */
+@layer components {
+  .cosmos {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--background);
+  }
+  .cosmos::before,
+  .cosmos::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .cosmos::before {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.16 0.16 0.16 0 -0.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"),
+      radial-gradient(38rem 26rem at 100% 0%, rgb(142 197 255 / 0.30), transparent 70%),
+      radial-gradient(70rem 48rem at 96% 2%, rgb(47 107 216 / 0.50), transparent 68%),
+      linear-gradient(to top right, #0b1e5b 0%, #0f2466 38%, #14307f 66%, #1d43a6 100%);
+    background-size: 180px 180px, auto, auto, auto;
+  }
+  .cosmos::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='560' font-family='ui-monospace,Menlo,monospace' fill='%23cfe0ff'%3E%3Ctext x='38' y='62' font-size='9' opacity='.22'%3EREQ%3C/text%3E%3Ctext x='212' y='31' font-size='14' opacity='.30'%3E%C2%B7%3C/text%3E%3Ctext x='331' y='148' font-size='8' opacity='.18'%3ESRC%3C/text%3E%3Ctext x='489' y='88' font-size='10' opacity='.26'%3E%E2%9C%A6%3C/text%3E%3Ctext x='603' y='212' font-size='14' opacity='.24'%3E%C2%B7%3C/text%3E%3Ctext x='97' y='241' font-size='8' opacity='.2'%3ETC%3C/text%3E%3Ctext x='268' y='309' font-size='14' opacity='.28'%3E%C2%B7%3C/text%3E%3Ctext x='421' y='371' font-size='8' opacity='.18'%3EDEC%3C/text%3E%3Ctext x='562' y='452' font-size='9' opacity='.24'%3E%E2%9C%A6%3C/text%3E%3Ctext x='158' y='447' font-size='8' opacity='.2'%3ESCR%3C/text%3E%3Ctext x='19' y='523' font-size='14' opacity='.26'%3E%C2%B7%3C/text%3E%3Ctext x='352' y='529' font-size='14' opacity='.22'%3E%C2%B7%3C/text%3E%3C/svg%3E");
+    background-size: 640px 560px;
+    animation: glyph-drift 240s linear infinite;
+  }
+  @keyframes glyph-drift {
+    from { background-position: 0 0; }
+    to { background-position: 640px -560px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cosmos::after { animation: none; }
+  }
+  /* Glass surface: translucent panel with a light hairline; blur used only here. */
+  .glass {
+    background: var(--card);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+}
+
+/* Wireframe SVGs come from the server in light greys; repaint them for the dark panel (CSS beats the
+ * presentation attributes, so the server output and its tests stay unchanged). */
+@layer components {
+  .wireframe svg rect[fill="#fff"] { fill: #0f2066; stroke: rgb(255 255 255 / 0.16); }
+  .wireframe svg rect[fill="#e0e0e0"] { fill: #1a3184; }
+  .wireframe svg rect[fill="#ececec"] { fill: rgb(255 255 255 / 0.05); stroke: rgb(255 255 255 / 0.2); }
+  .wireframe svg rect[fill="#bdbdbd"] { fill: rgb(139 124 255 / 0.55); stroke: rgb(179 168 255 / 0.8); }
+  .wireframe svg rect[fill="#d6d6d6"] { fill: rgb(255 255 255 / 0.16); }
+  .wireframe svg text[fill="#555"] { fill: #c9cee6; }
+  .wireframe svg text[fill="#333"] { fill: #eef0fa; }
+  .wireframe svg line[stroke="#d9480f"] { stroke: rgb(127 227 240 / 0.7); }
+  .wireframe svg circle[fill="#d9480f"] { fill: #7fe3f0; }
+  .wireframe svg .callout-no { fill: #071341; font-weight: 700; }
+  .wireframe svg text { font-family: var(--font-sans); }
+}
+
+/* Lineage map: lit links show their direction with a moving dash (stops under reduced motion). */
+.lineage-flow {
+  stroke-dasharray: 7 5;
+  animation: lineage-dash 1.1s linear infinite;
+}
+@keyframes lineage-dash {
+  to { stroke-dashoffset: -12; }
+}
+
+/* Team graph: a light streak runs along each relation (fast while a message travels it, slow otherwise). */
+.team-streak { animation: team-streak 1.4s linear infinite; }
+.team-streak-back { animation: team-streak-back 1.4s linear infinite; }
+.team-streak-idle { animation: team-streak 5s linear infinite; }
+@keyframes team-streak {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes team-streak-back {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 100; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineage-flow { animation: none; }
+  .team-streak, .team-streak-back, .team-streak-idle { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

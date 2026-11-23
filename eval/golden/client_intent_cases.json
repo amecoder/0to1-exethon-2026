@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "fixed_on": "2026-11-17",
+  "purpose": "확인 단계(CP1~CP4)에서 발주사가 승인하지 않고 남긴 말의 의도 판정(Liner Decisions choice question/change/both) 정답표. 측정 전에 고정한다. 전부 가상 데이터. 앱 코드는 이 파일을 읽지 않는다.",
+  "labels": {
+    "question": "알고 싶은 것만 있다 — 결과물을 그대로 두고 답만 하면 된다",
+    "change": "결과물을 고쳐 달라는 말이다 — 묻는 형태여도 고치라는 뜻이면 여기",
+    "both": "묻는 것과 고쳐 달라는 것이 함께 있다"
+  },
+  "scoring": {
+    "missed_fix": "정답이 change/both 인데 앱이 '질문'으로 처리한 건수 (확신도 0.6 미만은 앱이 both 로 바꾸므로 그 뒤 기준). 목표 0 — 고칠 점을 놓치는 품질 저하",
+    "question_saved": "정답이 question 인데 앱도 '질문'으로 처리해 다시 만들기를 아낀 비율. 목표 0.7 이상 — 비용 절감 효과",
+    "accuracy": "정답 라벨과 같은 choice 수 / 전체 (참고)"
+  },
+  "cases": [
+    {"id": "I01", "cp": "CP1", "text": "바퀴를 재발명하지 말라고 했어! 기존 앱이 있다면 그걸 쓰고 싶은데 기존 앱이 있나?", "expected": "question"},
+    {"id": "I02", "cp": "CP1", "text": "이미 있는 제품이 있다는거야 없다는거야?", "expected": "question"},
+    {"id": "I03", "cp": "CP1", "text": "바퀴를 재발명 하지 말라고하는데, 이런 기능을 제공하는 앱이 있는지 먼저 알려주면 좋지 않을까?", "expected": "question"},
+    {"id": "I04", "cp": "CP1", "text": "여기서 말하는 가족은 몇 명까지로 본 거예요?", "expected": "question"},
+    {"id": "I05", "cp": "CP1", "text": "범위에 쿠폰도 넣어 주세요", "expected": "change"},
+    {"id": "I06", "cp": "CP1", "text": "하지 않는 것에 서울 밖 배송을 넣어 주세요", "expected": "change"},
+    {"id": "I07", "cp": "CP1", "text": "아이들도 알림을 받을 수 있게 범위를 넓혀 주면 안 될까요?", "expected": "change"},
+    {"id": "I08", "cp": "CP1", "text": "기존 앱이 있나요? 없으면 읽음 확인은 꼭 넣어 주세요", "expected": "both"},
+    {"id": "I09", "cp": "CP2", "text": "REQ-03에서 '가정'이라고 된 건 무슨 뜻이에요?", "expected": "question"},
+    {"id": "I10", "cp": "CP2", "text": "결제가 실패하면 보통 다른 가게들은 어떻게 처리해요?", "expected": "question"},
+    {"id": "I11", "cp": "CP2", "text": "배송 요일은 수·토 중에 고르는 걸로 고쳐 주세요", "expected": "change"},
+    {"id": "I12", "cp": "CP2", "text": "해지 요구사항이 빠졌어요", "expected": "change"},
+    {"id": "I13", "cp": "CP2", "text": "일시정지는 최대 몇 주까지 되는 거죠? 4주로 해 주세요", "expected": "both"},
+    {"id": "I14", "cp": "CP2", "text": "꽃 사이즈 가격은 왜 미정으로 둔 거예요?", "expected": "question"},
+    {"id": "I15", "cp": "CP3", "text": "결제가 실패하면 고객은 무엇을 보게 되나요?", "expected": "question"},
+    {"id": "I16", "cp": "CP3", "text": "결제 안내 화면 문구가 어려워요", "expected": "change"},
+    {"id": "I17", "cp": "CP3", "text": "테스트 케이스는 누가 돌리는 거예요?", "expected": "question"},
+    {"id": "I18", "cp": "CP3", "text": "화면설계서에 관리자 주문 목록 화면도 추가해 주시겠어요?", "expected": "change"},
+    {"id": "I19", "cp": "CP3", "text": "PRD에 개인정보 보관 기간이 있나요? 없으면 1년으로 넣어 주세요", "expected": "both"},
+    {"id": "I20", "cp": "CP4", "text": "이 프로토타입은 휴대폰에서도 열려요?", "expected": "question"},
+    {"id": "I21", "cp": "CP4", "text": "가입 버튼 색이 너무 흐려서 잘 안 보여요, 진하게 해 주세요", "expected": "change"},
+    {"id": "I22", "cp": "CP4", "text": "사진은 실제 우리 가게 꽃이에요?", "expected": "question"},
+    {"id": "I23", "cp": "CP4", "text": "구독 관리 화면에서 배송지를 바꿀 수가 없어요", "expected": "change"},
+    {"id": "I24", "cp": "CP4", "text": "결제 내역은 어디서 봐요? 없으면 메뉴에 하나 만들어 주세요", "expected": "both"}
+  ]
+}
