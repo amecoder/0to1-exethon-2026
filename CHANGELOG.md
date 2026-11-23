@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-23 — PR #8 제출 v4: pip 설치 경로 (`a4d46e9`)
+
+- `requirements.txt`: `uv.lock` 에서 뽑은 고정 버전 22개. uv 가 없어도 `pip install -r requirements.txt` 로 설치
+- README 설치·실행 절, 사용 가이드 준비 절에 pip 방법. 코드 변경 없음(pytest 851)
+
 ## 2026-11-23 — PR #7 제출 v3: 사용 가이드·기획서 PDF, 개인 흔적 치환 (`9c78343`)
 
 - 사용 가이드 `docs/사용_가이드.md`: 준비, 시연 모드, 실제 모드 10단계(화면 사진 11장, 가상 데이터), 변경 요청, 안전장치, 문제 해결

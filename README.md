@@ -50,6 +50,14 @@
 uv sync
 ```
 
+uv 가 없으면 pip 로도 설치할 수 있다. `requirements.txt` 는 `uv.lock` 에서 뽑은 것이라 버전이 같다.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
 ### 2. API 키 설정
 
 저장소 루트에 `.env` 파일을 만들고 **필수 2개**를 넣는다. `.env`는 `.gitignore`에 있어 커밋되지 않는다.
@@ -99,6 +107,8 @@ LINER_FILE_MODEL=google/gemini-3.8-flash
 ```bash
 uv run uvicorn app.main:create_app --factory --port 8000
 ```
+
+pip 로 설치했다면 가상환경을 켠 채로 `uvicorn app.main:create_app --factory --port 8000` 을 실행한다.
 
 브라우저에서 http://127.0.0.1:8000 을 연다. 데이터는 `data/exethon.sqlite3` 에 저장된다.
 
