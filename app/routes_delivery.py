@@ -13,6 +13,7 @@ from app.documents import DocContext, build_documents
 from app.export import DownloadNotReadyError, build_bundle
 from app.routes_documents import document_file
 from app.prototype import PREVIEW_CSP, preview_page
+from app.scope_view import scope_view
 from app.swimlane import swimlane_svg
 from app.store import ProjectStore
 from app.views import client_todo
@@ -35,10 +36,11 @@ def preview_response(source: dict[str, Any], kind: str = "prototype") -> HTMLRes
 
 def lanes_response(source: dict[str, Any]) -> Response:
     """The role swimlane as an SVG image (shown with <img>, so no script can run), same headers as the preview."""
-    lanes = (source.get("screen_spec") or [{}])[-1].get("swimlane")
+    view = scope_view(source)  # a step on a screen the client cut is captioned 「화면 없음(이번 범위 밖)」
+    lanes = (view.get("screen_spec") or [{}])[-1].get("swimlane")
     if not lanes:
         raise HTTPException(status_code=404, detail="아직 역할별 흐름도가 없습니다")
-    return Response(swimlane_svg(lanes, source.get("screens", [])), media_type="image/svg+xml",
+    return Response(swimlane_svg(lanes, view.get("screens", [])), media_type="image/svg+xml",
                     headers=PREVIEW_HEADERS)
 
 

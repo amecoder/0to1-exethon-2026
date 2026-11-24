@@ -5,16 +5,23 @@ from __future__ import annotations
   (as constants to keep in one place), tasks in dependency order with done-when, linked screens and tests
   (input / expected, and whether the expected value can be judged yet), data and links to other systems,
   where to look.
-- 제안요약.md: one page for a decision maker — problem, scope, size (a rule over counts, with its basis),
-  expected effect (BRD goals), risks, what still needs a decision.
+- 제안요약.md lives in app/proposal.py (re-exported here).
+
+Both read the scoped view (app/scope_view.py): what the client cut when narrowing the screens is not a task,
+not a constant and not a test here — it is listed once under 「이번 범위에서 뺀 것」.
 """
 
 from collections.abc import Mapping, Sequence
 from typing import Any
 
 from app.code_values import code_values
+from app.open_points import integrations
 from app.placement import separated
+from app.proposal import proposal_md, size_class
+from app.scope_view import has_cut, scope_view
 from app.systems import FITS, REUSE
+
+__all__ = ["agents_md", "proposal_md", "size_class", "task_order"]
 
 PLATFORM_KO = {"app": "휴대폰 앱", "web": "웹사이트(데스크톱·태블릿·모바일)"}
 INPUT_KINDS = ("input", "select")
@@ -45,19 +52,9 @@ def task_order(requirements: Sequence[Mapping[str, Any]]) -> list[Mapping[str, A
     return [by_id[rid] for rid in done]
 
 
-def size_class(requirements: int, screens: int, systems: int) -> tuple[str, str]:
-    """작음 / 보통 / 큼 by a fixed rule over counts — never a made-up schedule or price."""
-    basis = f"요구사항 {requirements}건 · 화면 {screens}개 · 연계 시스템 {systems}개"
-    if requirements >= 20 or screens >= 8 or systems >= 3:
-        return "큼", basis
-    if requirements <= 6 and screens <= 3 and systems == 0:
-        return "작음", basis
-    return "보통", basis
-
-
 def _gwt(req: Mapping[str, Any]) -> str:
     a = req.get("acceptance") or {}
-    return f"Given {a.get('given', '')} / When {a.get('when', '')} / Then {a.get('then', '')}"
+    return f"조건: {a.get('given', '')} / 동작: {a.get('when', '')} / 결과: {a.get('then', '')}"
 
 
 def _do_not(source: Mapping[str, Any]) -> list[str]:
@@ -126,17 +123,23 @@ def _judgement(test: Mapping[str, Any], reqs: Mapping[str, Mapping[str, Any]], a
     linked = [reqs[rid] for rid in test.get("requirement_refs", []) if rid in reqs]
     undecided = [r["id"] for r in linked if r.get("status") in ("미결", "미확인")]
     if undecided or test.get("status") == "미결":
-        what = ", ".join(undecided) or "이 테스트의 기대값"
-        return (f"판정 불가 — {what}이(가) 아직 정해지지 않았다. 구현할 때 결과를 기록만 하고 통과 조건으로 쓰지 않는다. "
-                f"임시 동작: 값이 정해질 때까지 그 기능은 동작하지 않게 두고(설정 상수가 비어 있으면 건너뜀) 건너뛴 사실을 "
-                f"로그로 남긴다. 테스트는 skip 으로 두고 이유에 {what}을(를) 적는다.")
+        return f"[판정 불가: {', '.join(undecided) or '이 테스트의 기대값'}]"
     if test.get("status") != "가정" and not any(r.get("status") == "가정" for r in linked):
         return None
     consts = [const_name(d) for r in linked for d in (r.get("decision_refs") or []) if d in assumed]
     consts += [const_name(r["id"]) for r in linked
                if r.get("status") == "가정" and not set(r.get("decision_refs") or []) & assumed]
-    what = ", ".join(dict.fromkeys(consts)) or "이 테스트의 기대값"
-    return f"가정값 기준 — {what} 값이 바뀌면 기대값도 바뀐다(값은 「정해지지 않은 값」 표의 상수에서 읽는다)."
+    return f"[가정값: {', '.join(dict.fromkeys(consts)) or '이 테스트의 기대값'}]"
+
+
+TAG_NOTES = (
+    "테스트에 붙은 표시는 두 가지다.",
+    "- `[가정값: 상수 이름]`: 기대값이 가정값에 기댄다. 그 상수의 값이 바뀌면 기대값도 바뀌므로, 값은 「정해지지 않은 값」 표의 "
+    "상수에서 읽는다.",
+    "- `[판정 불가: ID]`: 그 ID가 아직 정해지지 않았다. 구현할 때 결과를 기록만 하고 통과 조건으로 쓰지 않는다. 임시 동작: 값이 정해질 "
+    "때까지 그 기능은 동작하지 않게 두고(설정 상수가 비어 있으면 건너뜀) 건너뛴 사실을 로그로 남긴다. 테스트는 skip으로 두고 "
+    "이유에 그 ID를 적는다.",
+)
 
 
 def _test_lines(test: Mapping[str, Any], reqs: Mapping[str, Mapping[str, Any]], assumed: set[str]) -> list[str]:
@@ -185,14 +188,14 @@ def _task_block(n: int, req: Mapping[str, Any], screens: Mapping[str, Any], test
         lines.append("- 앞 작업에서 이미 확인하는 테스트: "
                      + ", ".join(f"{t['id']}(TASK-{owner[t['id']]:02d}에서 확인)" for t in shared))
     if req.get("status") != "확정":
-        lines.append(f"- 주의: 이 요구사항은 「{req.get('status')}」 상태다. 근거가 약하니 만들기 전에 확인한다.")
+        lines.append(f"- [{req.get('status')}] 만들기 전에 근거를 확인한다.")
     return [*lines, ""]
 
 
 def _data_draft(screens: Sequence[Mapping[str, Any]]) -> list[str]:
     lines = []
     for s in screens:
-        fields = [e for e in s.get("elements", []) if e.get("kind") in INPUT_KINDS]
+        fields = [e for e in s.get("elements", []) if e.get("kind") in INPUT_KINDS and not e.get("out_of_scope")]
         if fields:
             lines.append(f"- {s['id']} {s.get('title', '')}: "
                          + "; ".join(f"{e.get('name', '')}({e.get('input_rule') or e.get('kind')})" for e in fields))
@@ -202,7 +205,7 @@ def _data_draft(screens: Sequence[Mapping[str, Any]]) -> list[str]:
 def _choices(screens: Sequence[Mapping[str, Any]]) -> list[str]:
     """Select elements with what the designer said they offer — the starting point for enum values."""
     return [f"- {s['id']} {e.get('name', '')}: {e['description']}" for s in screens for e in s.get("elements", [])
-            if e.get("kind") == "select" and e.get("description")]
+            if e.get("kind") == "select" and e.get("description") and not e.get("out_of_scope")]
 
 
 def _links(source: Mapping[str, Any]) -> list[str]:
@@ -230,6 +233,8 @@ def _links(source: Mapping[str, Any]) -> list[str]:
         if d.get("kind") == "build_or_buy" and alt and "모자란" in str(d.get("chosen", "")):
             lines.append(f"- {alt['name']} (기존 제품 — 그대로 쓰고 연결만 만든다): 이 제품이 하는 것 {alt.get('covers', '')} "
                          f"/ 이 제품에 없는 것(이번에 만든다) {alt.get('lacks', '')}")
+    lines += [f"- {s['name']} (밖의 서비스 — 어느 회사 것을 쓸지 아직 정하지 않았으면 질문으로 남긴다): {s['what']} "
+              f"— 쓰는 곳: {', '.join(s['refs'])}" for s in integrations(source)]
     return lines
 
 
@@ -240,7 +245,7 @@ def _data_section(source: Mapping[str, Any], screens: Sequence[Mapping[str, Any]
     parts = [("저장할 데이터 (DAR 요구사항 — 레코드와 필드의 출발점)", by_kind["DAR"]),
              ("연동 요구사항 (INR 요구사항 — 외부 입출력, 주기, 실패 처리)", by_kind["INR"]),
              ("입력 항목 (데이터 필드의 출발점)", _data_draft(screens)),
-             ("선택 항목과 선택지 (상태값·enum 의 출발점)", _choices(screens)),
+             ("선택 항목과 선택지 (상태값·enum의 출발점)", _choices(screens)),
              ("외부 연동 (새로 만들지 않고 연결하는 곳)", _links(source))]
     out = []
     for title, lines in parts:
@@ -257,14 +262,31 @@ def _open_table(source: Mapping[str, Any]) -> list[str]:
         return []
     return ["## 정해지지 않은 값 (설정 상수로 한 곳에 모은다)", "",
             "아래 값은 코드 곳곳에 직접 쓰지 말고 설정 상수 한 곳(예: config)에 모은다. 「미정」은 빈 값으로 두고, "
-            "그 값을 쓰는 곳은 값이 없으면 멈추게 만든다. 상수 이름은 원본 ID 라 source.json 에서 근거를 찾을 수 있다. "
+            "그 값을 쓰는 곳은 값이 없으면 멈추게 만든다. 상수 이름은 원본 ID와 같으므로 source.json에서 근거를 찾을 수 있다. "
             "「코드값」은 문장에서 시각·수량만 규칙으로 뽑은 것이다. 경계(이상인지 초과인지, 정각을 넣는지)는 「지금 값」 문장으로 "
             "확인하고, 문장에 없으면 질문으로 남긴다.", "",
             "| 상수 이름 | 무엇 | 지금 값 | 코드값 | 상태 | 쓰는 요구사항 |", "|---|---|---|---|---|---|",
             *[f"| {' | '.join(_cell(v) for v in row)} |" for row in rows], ""]
 
 
+def _cut_section(view: Mapping[str, Any]) -> list[str]:
+    """「이번 범위에서 뺀 것」: named once so nothing is lost, and so nobody builds it."""
+    if not has_cut(view):
+        return []
+    cut = view["out_of_scope"]
+    out = ["## 이번 범위에서 뺀 것 (만들지 않는다)", "",
+           f"발주사가 화면 범위를 줄이면서({cut.get('decision') or '범위 결정'}) 뺀 것이다. 작업·상수·테스트에 넣지 않았으므로 만들지 않는다. "
+           "다른 곳에서 이 ID를 말할 때는 「(범위 밖)」을 붙였다. source.json에는 기록으로 그대로 남아 있다.", ""]
+    out += [f"- 요구사항 {r['id']} {r.get('title', '')}: {r.get('statement', '')}" for r in cut["requirements"]]
+    out += [f"- 화면 {s['id']} {s.get('title', '')}".rstrip() for s in cut["screens"]]
+    out += [f"- 화면 요소 {e['screen']} #{e['no']} {e['name']}: 눌러서 가는 화면 {e['target']} 화면이 없어 이번 버전에 넣지 않는다"
+            for e in cut["elements"]]
+    out += [f"- 테스트 {t['id']} {t.get('title', '')}: 보류 — {t.get('reason', '')}" for t in cut["tests"]]
+    return [*out, ""]
+
+
 def agents_md(source: Mapping[str, Any]) -> str:
+    source = scope_view(source)
     ps, spec = _first(source, "problem_statement"), _first(source, "screen_spec")
     screens = {s["id"]: s for s in source.get("screens", [])}
     apart = separated(source.get("decisions", []))
@@ -273,20 +295,25 @@ def agents_md(source: Mapping[str, Any]) -> str:
     ordered = task_order(source.get("requirements", []))
     out = ["# AGENTS.md — 이 제품을 만드는 AI 에이전트를 위한 작업 지시서", "",
            "> 0to1(영일)이 발주사와 확인을 거쳐 확정한 공유 원본(source.json)에서 자동으로 만든 문서다. "
-           "문서 사이에 다른 말이 있으면 source.json 을 따른다.", "",
+           "문서 사이에 다른 말이 있으면 source.json을 따른다."
+           + (" 다만 「이번 범위에서 뺀 것」은 source.json에 남아 있어도 만들지 않는다(source.json의 meta.out_of_scope)."
+              if has_cut(source) else ""), "",
            "## 목표", "", f"- 누구를 위해: {ps.get('who', '')}", f"- 무엇이 불편한가: {ps.get('pain', '')}",
            f"- 성공 기준: {ps.get('done', '')}"]
     if spec.get("platform") in PLATFORM_KO:
         out.append(f"- 제품 형태: {PLATFORM_KO[spec['platform']]}")
     if spec.get("look"):
         out.append(f"- 시각 방향: {spec['look']}")
-    out += ["", "## 하지 말 것", "", *[f"- {line}" for line in _do_not(source)], "", *_open_table(source)]
+    out += ["", "## 하지 말 것", "", *[f"- {line}" for line in _do_not(source)], "", *_cut_section(source),
+            *_open_table(source)]
     if systems:
         out += ["## 이미 있는 시스템 (새로 만들지 말고 기능 추가·연계·재사용)", "",
                 *[f"- {s['id']} {s['name']}: {s.get('about', '')}" for s in systems.values()], ""]
     out += ["## 작업 순서", "",
-            "작업은 아래 순서대로 한다(먼저 끝나야 하는 요구사항이 앞에 온다). 작업마다 인수 조건을 만족하고 "
-            "통과해야 할 테스트를 모두 통과해야 끝난 것으로 본다. 테스트는 처음 나오는 작업에 한 번만 적었다.", ""]
+            "작업은 아래 순서대로 한다. 먼저 끝나야 하는 요구사항이 앞에 오기 때문이다. 작업 하나는 인수 조건을 만족하고 "
+            "「통과해야 할 테스트」를 모두 통과하면 끝난다. 테스트는 처음 나오는 작업에 한 번만 적었으므로 뒤 작업에는 번호만 있다. "
+            "인수 조건은 「조건(어떤 상황에서) / 동작(무엇을 하면) / 결과(어떻게 된다)」 순서다.", "", *TAG_NOTES,
+            "- `[가정]`처럼 요구사항에 붙은 상태 표시는 근거가 약하다는 뜻이다. 만들기 전에 근거를 확인한다.", ""]
     pairs = mutual_pairs(ordered)
     if pairs:
         out += ["서로 기대는 요구사항(순서를 정할 수 없어 함께 만든다 — 어느 쪽이 먼저인지 발주사에게 확인하면 좋다): "
@@ -303,33 +330,7 @@ def agents_md(source: Mapping[str, Any]) -> str:
                 *[f"- {o['id']} {o['title']}: {o['how']}" for o in ops], ""]
     out += _data_section(source, list(screens.values()))
     out += ["## 참고 자료 (같은 묶음 안)", "",
-            "- prototype.html: 화면 모양과 흐름의 기준. 가짜 데이터다.",
-            "- PRD.md · 화면설계서.md · 테스트케이스.md: 사람이 읽는 같은 내용.",
-            "- source.json: 요구사항·화면·테스트·결정·원문이 ID 로 연결된 전체 근거.", ""]
-    return "\n".join(out)
-
-
-def proposal_md(source: Mapping[str, Any]) -> str:
-    ps, scope, brd = _first(source, "problem_statement"), _first(source, "scope"), _first(source, "brd")
-    reqs, screens = source.get("requirements", []), source.get("screens", [])
-    fits = scope.get("systems", [])
-    label, basis = size_class(len(reqs), len(screens), len({f["system_ref"] for f in fits}))
-    open_reqs = [f"- {r['id']} {r.get('title', '')} ({r['status']})" for r in reqs if r.get("status") in ("미결", "가정")]
-    open_items = [f"- {o.get('id', '')} {o.get('title', '')}: {o.get('reason', '')}" for o in source.get("open_items", [])]
-    out = ["# 제안 요약", "", "> 0to1(영일)이 확정한 공유 원본에서 자동으로 만든 한 장 요약이다. 자세한 내용은 BRD·PRD 를 본다.", "",
-           "## 문제", "", f"- 누가: {ps.get('who', '')}", f"- 무엇이 불편한가: {ps.get('pain', '')}",
-           f"- 성공 기준: {ps.get('done', '')}", *[f"- {s}" for s in brd.get("summary", [])[:3]], "",
-           "## 범위", "", "이번에 하는 것", *[f"- {c.get('text', '')}" for c in scope.get("in", [])], "",
-           "이번에 하지 않는 것", *[f"- {c.get('text', '')}" for c in scope.get("out", [])], ""]
-    if fits:
-        out += ["이미 있는 시스템 활용", *[f"- {f['name']} · {f['fit']}: {f.get('what', '')}" for f in fits], ""]
-    out += ["## 규모", "", f"- 규모: **{label}** ({basis})",
-            "- 기준: 요구사항 20건·화면 8개·연계 시스템 3개 중 하나라도 넘으면 큼, 요구사항 6건·화면 3개 이하이고 연계가 없으면 작음.",
-            "- 기간과 비용은 이 규모와 작업 지시서(AGENTS.md)의 작업 수를 보고 개발팀이 정한다(이 문서는 숫자를 추정하지 않는다).", "",
-           "## 기대 효과", ""]
-    goals = brd.get("goals", [])
-    out += [f"- {g.get('goal', '')} — 기준: {g.get('criterion', '')} ({g.get('status', '')})" for g in goals] or ["- (BRD 목표 없음)"]
-    out += ["", "## 위험", ""]
-    out += [f"- {r.get('risk', '')} → {r.get('response', '')}" for r in brd.get("risks", [])] or ["- (BRD 위험 없음)"]
-    out += ["", "## 결정이 필요한 것", "", *(open_reqs + open_items or ["- 없음"]), ""]
+            "- prototype.html: 화면 모양과 흐름의 기준이다. 데이터는 가짜다.",
+            "- PRD.md · 화면설계서.md · 테스트케이스.md: 이 지시서와 같은 내용을 사람이 읽기 좋게 풀어 쓴 문서다.",
+            "- source.json: 요구사항·화면·테스트·결정·원문을 ID로 이은 전체 근거다.", ""]
     return "\n".join(out)

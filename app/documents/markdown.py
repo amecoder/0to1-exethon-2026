@@ -53,7 +53,7 @@ def body_lines(doc: Mapping[str, Any], skip: Sequence[str] = ()) -> list[str]:
 
 def body_markdown(doc: Mapping[str, Any]) -> str:
     """Document body without header and change history (used for the BRD length rule)."""
-    return "\n".join(body_lines(doc, skip=("history",)))
+    return "\n".join(body_lines(doc, skip=("history", "refs")))
 
 
 def to_markdown(doc: Mapping[str, Any]) -> str:

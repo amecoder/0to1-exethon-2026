@@ -152,9 +152,11 @@ def index_page(docs: Mapping[str, Mapping[str, Any]], files: Mapping[str, str], 
 
 
 def html_documents(docs: Mapping[str, Mapping[str, Any]], doc_files: Mapping[str, str],
-                   marked: Mapping[str, Sequence[str]], project: str, at: str, has_flow: bool = False) -> dict[str, str]:
-    """{zip path: html} for every document (named like its Markdown file) plus index.html."""
+                   marked: Mapping[str, Sequence[str]], project: str, at: str, has_flow: bool = False,
+                   per_doc: Mapping[str, Mapping[str, Sequence[str]]] | None = None) -> dict[str, str]:
+    """{zip path: html} for every document (named like its Markdown file) plus index.html.
+    `per_doc` gives each document its own unconfirmed items (the cover page keeps them all)."""
     files = {doc_id: name.rsplit(".", 1)[0] + ".html" for doc_id, name in doc_files.items() if doc_id in docs}
-    out = {files[d]: doc_page(docs[d], marked, project, at) for d in files}
+    out = {files[d]: doc_page(docs[d], marked if per_doc is None else per_doc.get(d, marked), project, at) for d in files}
     out["index.html"] = index_page(docs, files, marked, project, at, has_flow)
     return out

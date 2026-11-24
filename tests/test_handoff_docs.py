@@ -124,9 +124,10 @@ def test_tests_show_input_expected_and_undecidable() -> None:
     text = agents_md(_source_with_open_values())
     tc3 = text.split("TC-03 원인 표시")[1].split("###")[0]
     assert "입력: 원인 코드 7" in tc3 and "기대: 원인 문구" in tc3
-    assert "판정 불가" in tc3 and "REQ-03" in tc3 and "통과 조건으로 쓰지 않는다" in tc3
+    assert "[판정 불가: REQ-03]" in tc3 and "통과 조건으로 쓰지 않는다" not in tc3  # 11-24: a short tag per test …
+    assert text.count("통과 조건으로 쓰지 않는다") == 1 and text.count("값이 바뀌면 기대값도 바뀌므로") == 1  # … explained once
     tc2 = text.split("TC-02 보관 기간")[1].split("###")[0]
-    assert "가정값 기준" in tc2 and "DEC_02" in tc2
+    assert "[가정값: DEC_02]" in tc2
     assert "판정" not in text.split("TC-01 불러오기")[1].split("###")[0]
 
 
@@ -183,8 +184,10 @@ def test_data_section_lists_data_and_interface_requirements() -> None:
 
 
 def test_undecidable_test_carries_a_temporary_behaviour() -> None:
-    tc3 = agents_md(_source_with_open_values()).split("TC-03 원인 표시")[1].split("###")[0]
-    assert "임시 동작" in tc3 and "skip" in tc3 and "REQ-03" in tc3
+    text = agents_md(_source_with_open_values())
+    assert "[판정 불가: REQ-03]" in text.split("TC-03 원인 표시")[1].split("###")[0]
+    note = text.split("## 작업 순서")[1].split("### TASK-01")[0]  # 11-24: the temporary behaviour is explained once
+    assert "임시 동작" in note and "skip" in note and "[판정 불가: ID]" in note
 
 
 def test_a_reused_requirement_says_not_to_build_it_again() -> None:

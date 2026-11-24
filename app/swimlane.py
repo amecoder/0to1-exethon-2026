@@ -221,8 +221,9 @@ def _box(step: Mapping[str, Any], x: float, y: float, titles: Mapping[str, str])
         parts.insert(1, f'<title>{escape(step["note"])}</title>')  # first child: the box's hover text
         parts.append(_label(x + BOX_W / 2, y - NOTE_H / 2, step["note"], 11.4, 2, 12, RED, 700))
     title = titles.get(step.get("screen_ref", ""))
-    if title:
-        parts.append(_label(x + BOX_W / 2, y + BOX_H + CAP_H / 2 + 1, f"화면: {title}", 12.5, 1, 11, MUTED, 400))
+    caption = "화면: 이번 범위 밖" if step.get("out_of_scope") else f"화면: {title}" if title else ""
+    if caption:
+        parts.append(_label(x + BOX_W / 2, y + BOX_H + CAP_H / 2 + 1, caption, 12.5, 1, 11, MUTED, 400))
     return "".join([*parts, "</g>"])
 
 

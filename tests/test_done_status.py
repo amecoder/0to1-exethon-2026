@@ -45,7 +45,9 @@ def test_prd_done_criteria_section_lists_tests_assumptions_open_and_goals(repo_r
     assert [r[0] for r in must["rows"]] == [t["id"] for t in source["tests"] if t["priority"] == "상"]
     assert must["rows"][0][2] == source["tests"][0]["expected"]
     assert [r[0] for r in assumed["rows"]] == ["REQ-09", "DEC-09"]
-    assert [r[0] for r in open_["rows"]] == ["REQ-10", "OPEN-01"]
+    assert [r[0] for r in open_["rows"]][:2] == ["REQ-10", "OPEN-01"]
+    open_goals = [g["goal"] for g in source["brd"][0]["goals"] if g["status"] == "미결"]
+    assert [r[1] for r in open_["rows"][2:]] == open_goals  # 11-24: goals without a number are open too
     assert goals["columns"] == ["목표", "성공 기준", "상태"]
     assert goals["rows"] == [[g["goal"], g["criterion"], g["status"]] for g in source["brd"][0]["goals"]]
 

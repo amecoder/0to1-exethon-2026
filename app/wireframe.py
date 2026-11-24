@@ -47,6 +47,8 @@ def render_wireframe(screen: Mapping[str, Any]) -> str:
     parts = []
     y = HEADER + PAD
     for element in screen.get("elements", []):
+        if element.get("out_of_scope"):  # leads to a screen the client cut: not drawn (its number stays unused)
+            continue
         kind = str(element.get("kind", "text"))
         height = HEIGHTS.get(kind, 40)
         parts.append(_box(kind, y, str(element.get("name", ""))))

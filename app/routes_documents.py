@@ -13,6 +13,7 @@ from app.doc_docx import to_docx
 from app.doc_pdf import to_pdf
 from app.documents import DOC_IDS, DocContext, build_documents, to_markdown
 from app.export import DOC_FILES
+from app.scope_view import scope_view
 from app.store import ProjectStore
 from app.wireframe import render_wireframe
 
@@ -49,7 +50,7 @@ def build_documents_router(store: ProjectStore, ctx: DocContext) -> APIRouter:
 
     @router.get("/wireframes/{screen_id}.svg")
     def wireframe(project_id: str, screen_id: str) -> Response:
-        screen = next((s for s in source_of(project_id).get("screens", []) if s["id"] == screen_id), None)
+        screen = next((s for s in scope_view(source_of(project_id)).get("screens", []) if s["id"] == screen_id), None)
         if screen is None:
             raise HTTPException(status_code=404, detail=f"화면이 없습니다: {screen_id}")
         return Response(render_wireframe(screen), media_type="image/svg+xml")

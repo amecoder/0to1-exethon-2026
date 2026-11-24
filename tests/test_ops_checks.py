@@ -33,9 +33,9 @@ def test_ops_checks_are_stored_and_count_as_coverage(repo_root: Path, key_env: P
     assert "ops_checks" in fake.chat_payloads("test_cases")[0]["messages"][-1]["content"]
     doc = build_documents(ws.source)["tests"]
     ops = next(s for s in doc["sections"] if s["id"] == "ops")
-    assert ops["blocks"][0]["rows"][0][:3] == ["OPS-01", OPS[0]["title"], "REQ-02"]
+    assert ops["blocks"][-1]["rows"][0][:3] == ["OPS-01", OPS[0]["title"], "REQ-02"]  # 11-24: an intro line comes first
     coverage = next(s for s in doc["sections"] if s["id"] == "coverage")
-    assert any("OPS-01" in row[2] for row in coverage["blocks"][0]["rows"])
+    assert any("OPS-01" in row[2] for row in coverage["blocks"][-1]["rows"])
 
 
 def test_without_ops_checks_the_warning_stays(repo_root: Path, key_env: Path) -> None:

@@ -68,7 +68,7 @@ def test_prd_requirement_table_and_decisions(source: dict[str, Any]) -> None:
                                "관련 요구사항", "관련 화면·테스트"]
     assert [r[0] for r in reqs["rows"]] == ["REQ-01", "REQ-02"]
     assert "SCR-01" in reqs["rows"][0][10] and "TC-01" in reqs["rows"][0][10]
-    assert reqs["rows"][0][4].startswith("Given ")
+    assert reqs["rows"][0][4].startswith("조건: ")  # 11-24: Korean labels (조건 / 동작 / 결과)
     decisions = table(prd, "decisions")
     assert decisions["columns"] == ["결정", "주제", "채택", "기각안과 이유", "누가 답했나"]
     first = decisions["rows"][0]

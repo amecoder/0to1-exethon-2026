@@ -69,7 +69,8 @@ def test_s1_to_cp4_then_download_end_to_end(tmp_path: Path, key_env: Path) -> No
     assert ZIP_NAMES <= names and {"wireframes/SCR-01.svg", "wireframes/SCR-02.svg"} <= names
     for name in ("BRD.md", "PRD.md", "화면설계서.md", "테스트케이스.md"):
         text = zf.read(name).decode("utf-8")
-        assert "가정·미결 표시" in text and "- 가정: REQ-01" in text
+        assert "## 아직 확정되지 않은 것" in text and text.index("## 아직 확정되지 않은 것") < text.index("## 한눈에 보기")
+    assert "- 가정 요구사항" in zf.read("PRD.md").decode("utf-8")  # 11-24: each item is named in its own document only
     prototype = zf.read("prototype.html").decode("utf-8")
     assert "SCR-01" in prototype and "Content-Security-Policy" in prototype
     readme = zf.read("README.txt").decode("utf-8")

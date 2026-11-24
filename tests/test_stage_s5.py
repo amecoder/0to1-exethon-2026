@@ -169,3 +169,14 @@ def test_retry_after_a_failed_s5_skips_the_finished_test_cases(repo_root: Path, 
     assert (ws.pipeline["stage"], ws.pipeline["status"]) == ("CP3", "awaiting_confirmation")
     assert fake.chat_names.count("test_cases") == 1  # done before the cut: not asked (and paid) again
     assert ws.items("tests") and ws.pipeline.get("resume") is None
+
+
+def test_old_test_ids_in_the_text_follow_the_renumbering() -> None:
+    """11-24: QA numbers its cases TC-010 …, the code renumbers them TC-10 … — the sentences must follow."""
+    from app.stage_documents import retarget, test_id_map
+
+    raw = [{"id": "TC-002"}, {"id": "TC-001"}, {"id": "TC-03"}]
+    renamed = test_id_map(raw)
+    assert renamed == {"TC-002": "TC-01", "TC-001": "TC-02"}  # TC-03 keeps its ID
+    assert retarget("TC-001 상태에서 TC-002·TC-03을 본다. TC-0010은 그대로.", renamed) == "TC-02 상태에서 TC-01·TC-03을 본다. TC-0010은 그대로."
+    assert retarget("TC-001", {}) == "TC-001"

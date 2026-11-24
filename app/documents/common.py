@@ -59,16 +59,31 @@ def header(source: Mapping[str, Any], owner: str, ctx: DocContext) -> dict[str, 
             "version": versions[-1]["version"] if versions else DRAFT, "approvals": approvals(source)}
 
 
-def history_section(source: Mapping[str, Any], number: str, owner: str, ctx: DocContext) -> dict[str, Any]:
+# Register (11-24): the BRD is read by the business owner (합니다체); the PRD, 화면설계서 and 테스트케이스 by developers (한다체).
+HISTORY_INTRO = "확인을 받아 버전이 고정될 때마다 한 줄씩 늘어납니다."
+HISTORY_INTRO_DEV = "확인을 받아 버전이 고정될 때마다 한 줄씩 늘어난다."
+OPEN_INTRO = "아직 답이 없는 질문입니다. 답이 정해지면 요구사항에 반영합니다."
+OPEN_INTRO_DEV = "아직 답이 없는 질문이다. 답이 정해지면 요구사항에 반영한다."
+
+
+def cut_of(source: Mapping[str, Any]) -> dict[str, Any]:
+    """What the scope decision took out (see app.scope_view); empty lists when nothing was cut."""
+    out = source.get("out_of_scope") or {}
+    return {key: list(out.get(key) or []) for key in ("requirements", "screens", "tests", "elements")}
+
+
+def history_section(source: Mapping[str, Any], number: str, owner: str, ctx: DocContext,
+                    polite: bool = True) -> dict[str, Any]:
     confirmations = {c["id"]: c for c in source.get("confirmations", [])}
     rows = []
     for v in source.get("versions", []):
         cf = confirmations.get(v.get("confirmation_id"), {})
         rows.append([v["version"], str(v.get("created_at", ""))[:10], ctx.name(owner),
                      f"{cf.get('id', NONE)} ({cf.get('cp', '')} · {cf.get('who', '')})"])
-    blocks: list[dict[str, Any]] = [table(["버전", "날짜", "작성", "승인(확인 ID)"], rows)]
+    blocks: list[dict[str, Any]] = [paragraph(HISTORY_INTRO if polite else HISTORY_INTRO_DEV), table(["버전", "날짜", "작성", "승인(확인 ID)"], rows)]
     if not rows:
-        blocks.append(paragraph("아직 고정된 버전이 없습니다. 확인하면 버전이 생깁니다."))
+        blocks.append(paragraph("아직 고정된 버전이 없습니다. 확인하면 버전이 생깁니다." if polite
+                                else "아직 고정된 버전이 없다. 확인하면 버전이 생긴다."))
     return section("history", f"{number}. 변경 이력", blocks)
 
 

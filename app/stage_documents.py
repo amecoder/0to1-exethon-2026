@@ -138,8 +138,10 @@ def write_test_cases(ctx: StageContext, scr_map: Mapping[str, str]) -> None:
                                                     {**product_form(ctx), **ctx.feedback_extra()}))
     tests = normalize_tests(ctx, plan.get("tests"), scr_map)
     ctx.ws.write_all("qa", "tests", tests)
-    ctx.ws.write("qa", "test_plan", {"id": "TCDOC-01", "summary": str_list(plan.get("summary")),
-                                     "ops_checks": normalize_ops(ctx, plan.get("ops_checks"))})
+    renamed = test_id_map(plan.get("tests"))
+    ops = [{**o, "title": retarget(o["title"], renamed), "how": retarget(o["how"], renamed)}
+           for o in normalize_ops(ctx, plan.get("ops_checks"))]
+    ctx.ws.write("qa", "test_plan", {"id": "TCDOC-01", "summary": str_list(plan.get("summary")), "ops_checks": ops})
     ctx.bus.send("qa", "pm", f"테스트 케이스 {len(tests)}건")
 
 
@@ -212,20 +214,38 @@ def normalize_screens(ctx: StageContext, raw: Any) -> tuple[list[dict[str, Any]]
     return screens, scr_map
 
 
+def test_id_map(raw: Any) -> dict[str, str]:
+    """{the ID QA wrote: the ID the code gave} for the tests that were renumbered (TC-010 → TC-10)."""
+    pairs = {str(t.get("id") or "").strip(): f"TC-{i:02d}" for i, t in enumerate(_mappings(raw), start=1)}
+    return {old: new for old, new in pairs.items() if old and old != new}
+
+
+def retarget(text: str, renamed: Mapping[str, str]) -> str:
+    """Rewrite the old test IDs a sentence still names (「TC-010 상태」), all at once so a new ID is not renamed again."""
+    if not renamed:
+        return text
+    names = "|".join(re.escape(old) for old in sorted(renamed, key=len, reverse=True))
+    return re.sub(rf"(?<![A-Za-z0-9-])({names})(?![0-9])", lambda m: renamed[m.group(1)], text)
+
+
 def normalize_tests(ctx: StageContext, raw: Any, scr_map: Mapping[str, str]) -> list[dict[str, Any]]:
     statuses = {r["id"]: r["status"] for r in ctx.ws.items("requirements")}
     screen_ids = {s["id"]: s for s in ctx.ws.items("screens")}
+    renamed = test_id_map(raw)
     tests = []
     for i, t in enumerate(_mappings(raw), start=1):
         tid = f"TC-{i:02d}"
         refs = known_refs(ctx, t.get("requirement_refs"), statuses, "qa", tid)
         mapped = [scr_map.get(r, r) for r in str_list(t.get("screen_refs"))]
         tests.append({
-            "id": tid, "title": str(t.get("title", "")), "objective": str(t.get("objective", "")),
+            "id": tid, "title": retarget(str(t.get("title", "")), renamed),
+            "objective": retarget(str(t.get("objective", "")), renamed),
             "requirement_refs": refs, "screen_refs": known_refs(ctx, mapped, screen_ids, "qa", tid),
             "priority": t.get("priority") if t.get("priority") in PRIORITIES else "중",
-            "preconditions": str(t.get("preconditions", "")), "inputs": str(t.get("inputs", "")),
-            "steps": str_list(t.get("steps")), "expected": str(t.get("expected", "")),
+            "preconditions": retarget(str(t.get("preconditions", "")), renamed),
+            "inputs": retarget(str(t.get("inputs", "")), renamed),
+            "steps": [retarget(s, renamed) for s in str_list(t.get("steps"))],
+            "expected": retarget(str(t.get("expected", "")), renamed),
             "kind": t.get("kind") if t.get("kind") in TC_KINDS else "긍정",
             "status": derived_status(ctx, refs, statuses, "qa", tid), "owner_agent": "qa",
         })
