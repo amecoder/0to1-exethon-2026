@@ -20,7 +20,7 @@
 
 ## 키 없이 1분 보기 (시연 모드)
 
-1. `uv sync && uv run uvicorn app.main:create_app --factory --port 8000`
+1. `./run.sh` — 키를 물으면 비워 두고 Enter (macOS·Linux, 아래 「한 번에 설치·실행」)
 2. http://127.0.0.1:8000 → **시연 모드**
 3. 첫 장면: 메신저 메모에서 서로 부딪히는 두 문장. 재생(스페이스)이나 `]`(다음 장면)로 질문 → 확인 → 문서 4종 → 프로토타입 → 변경 영향(CP5) → 「아 이거 아닌데?」 판정까지 본다
 4. 끝 장면에서 **시연 녹화본 내려받기(zip)** — 인쇄용 문서·프로토타입을 키 없이 열어 볼 수 있다
@@ -43,6 +43,24 @@
 ## 실행 방법
 
 필요한 것: Python 3.12 이상과 [uv](https://docs.astral.sh/uv/). 화면은 미리 빌드된 정적 파일(`app/static/`)을 서버가 내보내므로 **실행만 할 때는 Node.js 가 필요 없다.**
+
+### 한 번에 설치·실행 (macOS·Linux)
+
+```bash
+git clone https://github.com/amecoder/0to1-exethon-2026.git
+cd 0to1-exethon-2026
+./run.sh
+```
+
+처음 실행하면 `install.sh` 가 먼저 돈다. uv 가 있으면 `uv.lock` 대로(Python 3.12 가 없어도 uv 가 받아 온다), 없으면 Python 3.12 이상의 venv 와 pip 로 `.venv` 에 설치한다. 이어서 Liner API 키를 묻는다. 붙여 넣은 키는 화면에 보이지 않고, 아래 「2. API 키 설정」의 필수·권장 값과 함께 `.env`(이 계정만 읽는 권한 600)에 저장된다. 비워 두고 Enter 를 누르면 시연 모드만 쓴다. 설치가 끝나면 서버가 http://127.0.0.1:8000 에서 켜진다.
+
+- 키를 묻지 않게 하려면: `LINER_API_KEY=<발급받은 키> ./run.sh`
+- 다른 포트: `PORT=8001 ./run.sh`
+- 나중에 키 넣기: `./install.sh` (`.env` 가 이미 있으면 건드리지 않으니 그때는 `.env` 를 직접 고친다)
+- Ubuntu·Debian 에서 「가상환경을 만들지 못했습니다」가 나오면 `sudo apt install python3-venv` 뒤 다시 실행한다
+- Windows 는 아래 1~3 을 손으로 따라 한다
+
+아래 1~3 은 스크립트가 하는 일을 손으로 하는 방법이다.
 
 ### 1. 설치
 
